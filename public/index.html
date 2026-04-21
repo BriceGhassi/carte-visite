@@ -1,0 +1,1695 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Questionnaire — Carte de visite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <!-- ═══════════════════════════════════════════════════
+       STYLES GLOBAUX
+  ═══════════════════════════════════════════════════ -->
+  <style>
+    /* ── Variables ── */
+    :root {
+      --ac:        #185FA5;
+      --ac-dark:   #0C447C;
+      --ac-light:  #E6F1FB;
+      --ac-mid:    #378ADD;
+      --txt:       #1a1a1a;
+      --txt-2:     #555;
+      --txt-3:     #888;
+      --bg:        #f5f4f0;
+      --bg-card:   #ffffff;
+      --border:    rgba(0,0,0,0.10);
+      --border-2:  rgba(0,0,0,0.18);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --shadow:    0 2px 16px rgba(0,0,0,0.07);
+      --shadow-lg: 0 8px 40px rgba(0,0,0,0.10);
+    }
+
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--txt);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       LAYOUT PRINCIPAL
+    ═══════════════════════════════════════════════════ */
+    .site-header {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+    }
+
+    .logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 18px;
+      color: var(--ac-dark);
+      letter-spacing: -0.01em;
+    }
+
+    .logo span { color: var(--ac-mid); }
+
+    .header-tag {
+      font-size: 12px;
+      color: var(--txt-3);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .main-container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 5rem;
+    }
+
+    /* ── Page switcher ── */
+    .page { display: block; }
+    .page.hidden { display: none; }
+
+    /* ═══════════════════════════════════════════════════
+       INTRO HEADER
+    ═══════════════════════════════════════════════════ */
+    .intro {
+      margin-bottom: 2.5rem;
+    }
+
+    .intro-tag {
+      display: inline-block;
+      font-size: 11px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--ac);
+      background: var(--ac-light);
+      border-radius: 20px;
+      padding: 4px 14px;
+      margin-bottom: 14px;
+      font-weight: 500;
+    }
+
+    .intro h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(26px, 5vw, 38px);
+      line-height: 1.15;
+      color: var(--txt);
+      margin-bottom: 10px;
+      letter-spacing: -0.02em;
+    }
+
+    .intro h1 em {
+      font-style: italic;
+      color: var(--ac);
+    }
+
+    .intro p {
+      font-size: 15px;
+      color: var(--txt-2);
+      max-width: 520px;
+    }
+
+    /* ── Barre de progression globale ── */
+    .progress-wrapper {
+      margin-bottom: 2rem;
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .progress-label {
+      font-size: 13px;
+      color: var(--txt-3);
+    }
+
+    .progress-pct {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ac);
+    }
+
+    .progress-track {
+      height: 4px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--ac);
+      border-radius: 4px;
+      width: 0%;
+      transition: width .5s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* ═══════════════════════════════════════════════════
+       SECTIONS DU FORMULAIRE
+    ═══════════════════════════════════════════════════ */
+    .form-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      margin-bottom: 1.25rem;
+      box-shadow: var(--shadow);
+      animation: fadeUp .35s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-section:nth-child(1)  { animation-delay: .05s; }
+    .form-section:nth-child(2)  { animation-delay: .10s; }
+    .form-section:nth-child(3)  { animation-delay: .15s; }
+    .form-section:nth-child(4)  { animation-delay: .20s; }
+    .form-section:nth-child(5)  { animation-delay: .25s; }
+    .form-section:nth-child(6)  { animation-delay: .30s; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-num {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--ac-light);
+      color: var(--ac-dark);
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--txt);
+    }
+
+    .section-subtitle {
+      font-size: 12px;
+      color: var(--txt-3);
+      margin-top: 1px;
+    }
+
+    /* ── Grilles de champs ── */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .grid-1 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .col-full { grid-column: 1 / -1; }
+
+    /* ── Champ individuel ── */
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--txt-2);
+    }
+
+    .field label .req { color: var(--ac); margin-left: 2px; }
+    .field label .opt { color: var(--txt-3); font-size: 11px; font-weight: 400; margin-left: 4px; }
+    .field label .hint { display: block; font-size: 11px; color: var(--txt-3); font-weight: 400; margin-top: 1px; }
+
+    /* ── Inputs ── */
+    input[type=text],
+    input[type=email],
+    input[type=tel],
+    input[type=url],
+    textarea,
+    select {
+      border: 1.5px solid var(--border-2);
+      border-radius: var(--radius-sm);
+      padding: 9px 13px;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--txt);
+      background: #fff;
+      width: 100%;
+      outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--ac);
+      box-shadow: 0 0 0 3px rgba(24,95,165,.12);
+    }
+
+    input::placeholder,
+    textarea::placeholder { color: var(--txt-3); font-size: 13px; }
+
+    textarea { resize: vertical; min-height: 78px; }
+
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 13px center;
+      padding-right: 36px;
+      cursor: pointer;
+    }
+
+    /* ── Radio / Checkbox pills ── */
+    .radio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 8px;
+    }
+
+    .pill-option {
+      border: 1.5px solid var(--border-2);
+      border-radius: var(--radius-sm);
+      padding: 9px 13px;
+      font-size: 13px;
+      color: var(--txt-2);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      transition: all .15s;
+      background: #fff;
+      user-select: none;
+    }
+
+    .pill-option:hover {
+      border-color: var(--ac-mid);
+      background: var(--ac-light);
+      color: var(--ac-dark);
+    }
+
+    .pill-option input { accent-color: var(--ac); width: 15px; height: 15px; flex-shrink: 0; }
+
+    .pill-option:has(input:checked) {
+      border-color: var(--ac);
+      background: var(--ac-light);
+      color: var(--ac-dark);
+      font-weight: 500;
+    }
+
+    /* ── Palette couleurs ── */
+    .color-palette {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .color-dot {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform .15s, outline-offset .15s;
+      outline: 3px solid transparent;
+      outline-offset: 1px;
+    }
+
+    .color-dot:hover { transform: scale(1.12); }
+    .color-dot.selected { outline: 3px solid var(--ac); outline-offset: 3px; }
+
+    .color-hint {
+      font-size: 12px;
+      color: var(--txt-3);
+      margin-top: 6px;
+    }
+
+    /* ── Note info ── */
+    .info-note {
+      background: var(--ac-light);
+      border-left: 3px solid var(--ac);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--ac-dark);
+      margin-top: 8px;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 1.25rem 0;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       BOUTONS
+    ═══════════════════════════════════════════════════ */
+    .actions-bar {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: 1.5px solid var(--border-2);
+      border-radius: var(--radius-sm);
+      padding: 10px 22px;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+      background: #fff;
+      color: var(--txt);
+      transition: all .15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .btn:hover {
+      background: var(--bg);
+      border-color: var(--ac-mid);
+    }
+
+    .btn:active { transform: scale(.98); }
+
+    .btn-primary {
+      background: var(--ac);
+      color: #fff;
+      border-color: var(--ac);
+    }
+
+    .btn-primary:hover {
+      background: var(--ac-dark);
+      border-color: var(--ac-dark);
+    }
+
+    /* ═══════════════════════════════════════════════════
+       PAGE BRIEF — RÉSULTATS
+    ═══════════════════════════════════════════════════ */
+    .brief-hero {
+      background: var(--ac);
+      color: #fff;
+      border-radius: var(--radius-lg);
+      padding: 2rem 2rem 1.75rem;
+      margin-bottom: 1.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .brief-hero::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 180px; height: 180px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 50%;
+    }
+
+    .brief-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; right: 60px;
+      width: 140px; height: 140px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 50%;
+    }
+
+    .brief-ref {
+      font-size: 11px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      opacity: .65;
+      margin-bottom: 10px;
+    }
+
+    .brief-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(22px, 4vw, 32px);
+      letter-spacing: -0.01em;
+      margin-bottom: 4px;
+    }
+
+    .brief-role {
+      font-size: 15px;
+      opacity: .85;
+    }
+
+    .brief-score-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 1.25rem;
+    }
+
+    .brief-score-label {
+      font-size: 12px;
+      opacity: .7;
+      white-space: nowrap;
+    }
+
+    .brief-score-track {
+      flex: 1;
+      height: 5px;
+      background: rgba(255,255,255,.25);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .brief-score-fill {
+      height: 100%;
+      background: #fff;
+      border-radius: 3px;
+      transition: width 1s cubic-bezier(.4,0,.2,1);
+    }
+
+    .brief-score-num {
+      font-size: 14px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    /* ── Blocs de données du brief ── */
+    .brief-block {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
+      box-shadow: var(--shadow);
+    }
+
+    .brief-block-title {
+      font-size: 11px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--txt-3);
+      font-weight: 500;
+      margin-bottom: 1rem;
+      padding-bottom: .75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .kv-table { width: 100%; }
+
+    .kv-row {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 10px;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: start;
+    }
+
+    .kv-row:last-child { border-bottom: none; }
+
+    .kv-key {
+      font-size: 13px;
+      color: var(--txt-3);
+      padding-top: 1px;
+    }
+
+    .kv-val {
+      font-size: 13px;
+      color: var(--txt);
+    }
+
+    /* ── Tags ── */
+    .tags-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 12px;
+      padding: 3px 11px;
+      border-radius: 20px;
+      background: var(--ac-light);
+      color: var(--ac-dark);
+      border: 1px solid rgba(24,95,165,.2);
+      font-weight: 500;
+    }
+
+    /* ── Palette dans le brief ── */
+    .palette-display {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .palette-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .palette-dot {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border-2);
+    }
+
+    .palette-name {
+      font-size: 11px;
+      color: var(--txt-3);
+    }
+
+    /* ── Recommandations ── */
+    .reco-item {
+      padding: .9rem 1rem;
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      margin-bottom: 8px;
+      border-left: 3px solid var(--ac-mid);
+    }
+
+    .reco-item:last-child { margin-bottom: 0; }
+
+    .reco-label {
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--ac);
+      margin-bottom: 4px;
+    }
+
+    .reco-text {
+      font-size: 13px;
+      color: var(--txt-2);
+      line-height: 1.5;
+    }
+
+    /* ── Navigation brief ── */
+    .brief-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.75rem;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .brief-nav-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      color: var(--txt);
+      letter-spacing: -0.01em;
+    }
+
+    /* ── Print / Export ── */
+    .print-bar {
+      display: flex;
+      gap: 8px;
+      margin-top: 1.75rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════════════ */
+    .site-footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 12px;
+      color: var(--txt-3);
+      border-top: 1px solid var(--border);
+      margin-top: 3rem;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       TOAST NOTIFICATION
+    ═══════════════════════════════════════════════════ */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--txt);
+      color: #fff;
+      padding: 12px 22px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 9999;
+      transition: transform .35s cubic-bezier(.4,0,.2,1);
+      white-space: nowrap;
+    }
+
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ═══════════════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════════════ */
+    @media (max-width: 580px) {
+      .main-container { padding: 1.5rem 1rem 4rem; }
+      .form-section { padding: 1.25rem; }
+      .grid-2 { grid-template-columns: 1fr; }
+      .col-full { grid-column: 1; }
+      .kv-row { grid-template-columns: 1fr; gap: 2px; }
+      .kv-key { color: var(--txt-3); font-size: 12px; }
+      .site-header { padding: 0 1rem; }
+      .brief-hero { padding: 1.5rem; }
+      .radio-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── Print ── */
+    @media print {
+      .site-header, .actions-bar, .print-bar, .btn, .site-footer { display: none !important; }
+      body { background: #fff; }
+      .brief-hero { background: var(--ac) !important; color: #fff !important; print-color-adjust: exact; }
+      .form-section, .brief-block { box-shadow: none; border: 1px solid #ddd; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════
+       EN-TÊTE DU SITE
+  ═══════════════════════════════════════════════════ -->
+  <header class="site-header">
+    <div class="logo">Studio<span>Brief</span></div>
+    <div class="header-tag">Carte de visite</div>
+  </header>
+
+  <!-- ── TOAST ── -->
+  <div class="toast" id="toast"></div>
+
+  <main class="main-container">
+
+    <!-- ═══════════════════════════════════════════════════
+         PAGE 1 : FORMULAIRE
+    ═══════════════════════════════════════════════════ -->
+    <div class="page" id="page-form">
+
+      <!-- Intro -->
+      <div class="intro">
+        <div class="intro-tag">Nouveau brief</div>
+        <h1>Créons votre carte de visite <em>idéale</em></h1>
+        <p>Répondez à ce questionnaire en quelques minutes. Vos réponses permettront au designer de créer une carte parfaitement adaptée à votre image.</p>
+      </div>
+
+      <!-- Barre de progression -->
+      <div class="progress-wrapper">
+        <div class="progress-meta">
+          <span class="progress-label">Complétion du formulaire</span>
+          <span class="progress-pct" id="pct-label">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+      </div>
+
+      <!-- ── SECTION 1 : Informations personnelles ── -->
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-num">1</div>
+          <div>
+            <div class="section-title">Informations personnelles &amp; professionnelles</div>
+            <div class="section-subtitle">Ces données apparaîtront directement sur la carte</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="f-prenom">Prénom <span class="req">*</span></label>
+            <input type="text" id="f-prenom" placeholder="Ex : Sophie" data-track>
+          </div>
+          <div class="field">
+            <label for="f-nom">Nom <span class="req">*</span></label>
+            <input type="text" id="f-nom" placeholder="Ex : Dupont" data-track>
+          </div>
+          <div class="field col-full">
+            <label for="f-titre">
+              Titre / Fonction <span class="req">*</span>
+              <span class="hint">Tel qu'il apparaîtra sur la carte</span>
+            </label>
+            <input type="text" id="f-titre" placeholder="Ex : Directrice Commerciale, Architecte, Photographe freelance" data-track>
+          </div>
+          <div class="field col-full">
+            <label for="f-entreprise">
+              Nom de l'entreprise / Structure
+              <span class="opt">(optionnel si indépendant)</span>
+            </label>
+            <input type="text" id="f-entreprise" placeholder="Ex : Cabinet Dupont & Associés" data-track>
+          </div>
+          <div class="field">
+            <label for="f-tel">Téléphone principal <span class="req">*</span></label>
+            <input type="tel" id="f-tel" placeholder="Ex : +237 6 12 34 56 78" data-track>
+          </div>
+          <div class="field">
+            <label for="f-tel2">
+              Second numéro
+              <span class="opt">(optionnel)</span>
+            </label>
+            <input type="tel" id="f-tel2" placeholder="WhatsApp, ligne directe…" data-track>
+          </div>
+          <div class="field col-full">
+            <label for="f-email">E-mail professionnel <span class="req">*</span></label>
+            <input type="email" id="f-email" placeholder="Ex : sophie.dupont@entreprise.com" data-track>
+          </div>
+          <div class="field col-full">
+            <label for="f-adresse">
+              Adresse postale
+              <span class="opt">(optionnel — ville et pays au minimum)</span>
+            </label>
+            <input type="text" id="f-adresse" placeholder="Ex : Yaoundé, Cameroun" data-track>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SECTION 2 : Présence en ligne ── -->
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-num">2</div>
+          <div>
+            <div class="section-title">Présence en ligne &amp; réseaux sociaux</div>
+            <div class="section-subtitle">Sélectionnez ce qui doit figurer sur la carte</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field col-full">
+            <label for="f-web">Site web <span class="opt">(optionnel)</span></label>
+            <input type="url" id="f-web" placeholder="www.votresite.com" data-track>
+          </div>
+          <div class="field">
+            <label for="f-linkedin">LinkedIn <span class="opt">(optionnel)</span></label>
+            <input type="text" id="f-linkedin" placeholder="linkedin.com/in/..." data-track>
+          </div>
+          <div class="field">
+            <label for="f-insta">Instagram / Facebook <span class="opt">(optionnel)</span></label>
+            <input type="text" id="f-insta" placeholder="@votrenom" data-track>
+          </div>
+          <div class="field col-full">
+            <label for="f-autres-rs">Autres réseaux <span class="opt">(optionnel)</span></label>
+            <input type="text" id="f-autres-rs" placeholder="TikTok, YouTube, Behance, GitHub…" data-track>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="field">
+          <label>Souhaitez-vous un code QR sur la carte ?</label>
+          <div class="radio-grid" style="margin-top:8px">
+            <label class="pill-option"><input type="radio" name="qr" value="Oui" data-track> Oui</label>
+            <label class="pill-option"><input type="radio" name="qr" value="Non" data-track> Non</label>
+            <label class="pill-option"><input type="radio" name="qr" value="À définir" data-track> Je ne sais pas</label>
+          </div>
+        </div>
+
+        <div class="info-note" style="margin-top:12px">
+          Si oui, vers quel lien pointera le QR code ? (site web, vCard, portfolio, menu…)
+        </div>
+        <div class="field" style="margin-top:10px">
+          <input type="text" id="f-qr-url" placeholder="URL ou contenu du QR code" data-track>
+        </div>
+      </div>
+
+      <!-- ── SECTION 3 : Positionnement ── -->
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-num">3</div>
+          <div>
+            <div class="section-title">Positionnement &amp; message</div>
+            <div class="section-subtitle">Pour orienter l'identité visuelle</div>
+          </div>
+        </div>
+
+        <div class="grid-1">
+          <div class="field">
+            <label for="f-secteur">Secteur d'activité <span class="req">*</span></label>
+            <input type="text" id="f-secteur" placeholder="Ex : Droit, Architecture, Santé, Tech, Mode, BTP, Marketing…" data-track>
+          </div>
+          <div class="field">
+            <label for="f-cible">
+              Clientèle cible
+              <span class="hint">Décrivez votre interlocuteur principal</span>
+            </label>
+            <input type="text" id="f-cible" placeholder="Ex : PME, particuliers, partenaires institutionnels, étudiants…" data-track>
+          </div>
+          <div class="field">
+            <label for="f-slogan">
+              Slogan ou accroche
+              <span class="opt">(optionnel)</span>
+            </label>
+            <input type="text" id="f-slogan" placeholder="Ex : « L'expertise au service de votre croissance »" data-track>
+          </div>
+          <div class="field">
+            <label>Impression souhaitée chez votre interlocuteur</label>
+            <div class="radio-grid" style="margin-top:8px">
+              <label class="pill-option"><input type="radio" name="feel" value="Confiance / Sérieux" data-track> Confiance / Sérieux</label>
+              <label class="pill-option"><input type="radio" name="feel" value="Créativité / Originalité" data-track> Créativité / Originalité</label>
+              <label class="pill-option"><input type="radio" name="feel" value="Luxe / Prestige" data-track> Luxe / Prestige</label>
+              <label class="pill-option"><input type="radio" name="feel" value="Proximité / Chaleur" data-track> Proximité / Chaleur</label>
+              <label class="pill-option"><input type="radio" name="feel" value="Innovation / Modernité" data-track> Innovation / Modernité</label>
+              <label class="pill-option"><input type="radio" name="feel" value="Autre" data-track> Autre</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SECTION 4 : Identité visuelle ── -->
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-num">4</div>
+          <div>
+            <div class="section-title">Identité visuelle &amp; design</div>
+            <div class="section-subtitle">Votre univers graphique</div>
+          </div>
+        </div>
+
+        <!-- Logo -->
+        <div class="field" style="margin-bottom:16px">
+          <label>Avez-vous un logo existant ? <span class="req">*</span></label>
+          <div class="radio-grid" style="margin-top:8px">
+            <label class="pill-option"><input type="radio" name="logo" value="Oui, je le fournirai" data-track> Oui, je le fournirai</label>
+            <label class="pill-option"><input type="radio" name="logo" value="Non, à créer" data-track> Non, à créer</label>
+            <label class="pill-option"><input type="radio" name="logo" value="En cours de création" data-track> En cours de création</label>
+          </div>
+        </div>
+
+        <!-- Style visuel -->
+        <div class="field" style="margin-bottom:16px">
+          <label>Style visuel souhaité <span class="hint">Plusieurs choix possibles</span></label>
+          <div class="radio-grid" id="styles-wrap" style="margin-top:8px">
+            <label class="pill-option"><input type="checkbox" value="Minimaliste" data-track> Minimaliste</label>
+            <label class="pill-option"><input type="checkbox" value="Élégant / Classique" data-track> Élégant / Classique</label>
+            <label class="pill-option"><input type="checkbox" value="Moderne / Épuré" data-track> Moderne / Épuré</label>
+            <label class="pill-option"><input type="checkbox" value="Créatif / Audacieux" data-track> Créatif / Audacieux</label>
+            <label class="pill-option"><input type="checkbox" value="Coloré / Dynamique" data-track> Coloré / Dynamique</label>
+            <label class="pill-option"><input type="checkbox" value="Noir & blanc" data-track> Noir &amp; blanc</label>
+            <label class="pill-option"><input type="checkbox" value="Luxueux / Sobre" data-track> Luxueux / Sobre</label>
+          </div>
+        </div>
+
+        <!-- Couleurs -->
+        <div class="field" style="margin-bottom:16px">
+          <label>Couleurs principales <span class="hint">Cliquez pour sélectionner — 2 à 3 maximum recommandé</span></label>
+          <div class="color-palette" id="color-palette">
+            <div class="color-dot" style="background:#1a1a1a" data-color="Noir" data-hex="#1a1a1a" title="Noir"></div>
+            <div class="color-dot" style="background:#f5f4f0;border-color:#ccc" data-color="Blanc/Crème" data-hex="#f5f4f0" title="Blanc / Crème"></div>
+            <div class="color-dot" style="background:#185FA5" data-color="Bleu" data-hex="#185FA5" title="Bleu"></div>
+            <div class="color-dot" style="background:#0F6E56" data-color="Vert" data-hex="#0F6E56" title="Vert"></div>
+            <div class="color-dot" style="background:#A32D2D" data-color="Rouge" data-hex="#A32D2D" title="Rouge"></div>
+            <div class="color-dot" style="background:#BA7517" data-color="Or / Doré" data-hex="#BA7517" title="Or / Doré"></div>
+            <div class="color-dot" style="background:#534AB7" data-color="Violet" data-hex="#534AB7" title="Violet"></div>
+            <div class="color-dot" style="background:#993556" data-color="Rose" data-hex="#993556" title="Rose"></div>
+            <div class="color-dot" style="background:#888780" data-color="Gris" data-hex="#888780" title="Gris"></div>
+            <div class="color-dot" style="background:#D85A30" data-color="Orange" data-hex="#D85A30" title="Orange"></div>
+          </div>
+          <div class="color-hint" id="color-hint">Aucune couleur sélectionnée</div>
+          <input type="text" id="f-couleur-autre" placeholder="Autre couleur ou code hexadécimal (#FF5733)" style="margin-top:10px;max-width:280px" data-track>
+        </div>
+
+        <!-- Typographie -->
+        <div class="field" style="margin-bottom:16px">
+          <label for="f-typo">
+            Préférences typographiques
+            <span class="opt">(optionnel)</span>
+          </label>
+          <input type="text" id="f-typo" placeholder="Ex : serif classique, sans-serif moderne, écriture manuscrite…" data-track>
+        </div>
+
+        <!-- Inspirations -->
+        <div class="field">
+          <label for="f-inspi">
+            Inspirations ou références visuelles
+            <span class="opt">(optionnel)</span>
+          </label>
+          <textarea id="f-inspi" placeholder="Lien Pinterest, description d'un style vu chez un confrère, URL d'une carte que vous admirez…" data-track></textarea>
+        </div>
+      </div>
+
+      <!-- ── SECTION 5 : Format & finition ── -->
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-num">5</div>
+          <div>
+            <div class="section-title">Format &amp; finition</div>
+            <div class="section-subtitle">Spécifications techniques d'impression</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="f-format">Format <span class="req">*</span></label>
+            <select id="f-format" data-track>
+              <option value="">— Choisir —</option>
+              <option>Standard 85 × 55 mm</option>
+              <option>Carré 55 × 55 mm</option>
+              <option>Mini 85 × 42 mm</option>
+              <option>Personnalisé (à préciser)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Orientation</label>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <label class="pill-option" style="flex:1"><input type="radio" name="orient" value="Paysage" data-track> Paysage</label>
+              <label class="pill-option" style="flex:1"><input type="radio" name="orient" value="Portrait" data-track> Portrait</label>
+            </div>
+          </div>
+          <div class="field">
+            <label>Impression</label>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <label class="pill-option" style="flex:1"><input type="radio" name="rv" value="Recto seul" data-track> Recto seul</label>
+              <label class="pill-option" style="flex:1"><input type="radio" name="rv" value="Recto-verso" data-track> Recto-verso</label>
+            </div>
+          </div>
+          <div class="field">
+            <label for="f-papier">Type de papier</label>
+            <select id="f-papier" data-track>
+              <option value="">— Choisir —</option>
+              <option>Couché mat 350g</option>
+              <option>Couché brillant 350g</option>
+              <option>Soft touch / Velours</option>
+              <option>Kraft / Recyclé</option>
+              <option>Transparent / PVC</option>
+              <option>Je laisse le choix au designer</option>
+            </select>
+          </div>
+          <div class="field col-full">
+            <label>Finitions spéciales <span class="opt">(optionnel — plusieurs choix possibles)</span></label>
+            <div class="radio-grid" id="finitions-wrap" style="margin-top:8px">
+              <label class="pill-option"><input type="checkbox" value="Dorure à chaud" data-track> Dorure à chaud</label>
+              <label class="pill-option"><input type="checkbox" value="Argenture" data-track> Argenture</label>
+              <label class="pill-option"><input type="checkbox" value="Vernis sélectif" data-track> Vernis sélectif</label>
+              <label class="pill-option"><input type="checkbox" value="Embossage" data-track> Embossage</label>
+              <label class="pill-option"><input type="checkbox" value="Découpe spéciale" data-track> Découpe spéciale</label>
+              <label class="pill-option"><input type="checkbox" value="Coins arrondis" data-track> Coins arrondis</label>
+              <label class="pill-option"><input type="checkbox" value="Aucune finition" data-track> Aucune finition</label>
+            </div>
+          </div>
+          <div class="field col-full">
+            <label for="f-qte">Quantité estimée <span class="opt">(optionnel)</span></label>
+            <input type="text" id="f-qte" placeholder="Ex : 250, 500, 1000 exemplaires" data-track>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SECTION 6 : Informations complémentaires ── -->
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-num">6</div>
+          <div>
+            <div class="section-title">Informations complémentaires</div>
+            <div class="section-subtitle">Budget, délai et contraintes</div>
+          </div>
+        </div>
+
+        <div class="grid-1">
+          <div class="field">
+            <label for="f-budget">Budget indicatif <span class="opt">(optionnel)</span></label>
+            <input type="text" id="f-budget" placeholder="Ex : 15 000 – 30 000 FCFA tout compris" data-track>
+          </div>
+          <div class="field">
+            <label for="f-delai">Délai souhaité</label>
+            <select id="f-delai" data-track>
+              <option value="">— Choisir —</option>
+              <option>Urgent (moins de 48h)</option>
+              <option>1 semaine</option>
+              <option>2 semaines</option>
+              <option>1 mois ou plus</option>
+              <option>Pas de contrainte</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="f-eviter">Éléments à absolument éviter <span class="opt">(optionnel)</span></label>
+            <textarea id="f-eviter" placeholder="Ex : couleur rouge, style trop chargé, photos de personnes, certaines polices…" data-track></textarea>
+          </div>
+          <div class="field">
+            <label for="f-remarques">Remarques ou demandes spécifiques <span class="opt">(optionnel)</span></label>
+            <textarea id="f-remarques" placeholder="Tout ce qui n'a pas été couvert ci-dessus et qui peut aider le designer…" data-track></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Actions ── -->
+      <div class="actions-bar">
+        <button class="btn" onclick="resetForm()">Réinitialiser</button>
+        <button class="btn" onclick="previewBrief()">Aperçu du brief</button>
+        <button class="btn btn-primary" onclick="submitForm()">Générer le brief complet →</button>
+      </div>
+
+    </div><!-- /page-form -->
+
+
+    <!-- ═══════════════════════════════════════════════════
+         PAGE 2 : BRIEF RÉSULTATS
+    ═══════════════════════════════════════════════════ -->
+    <div class="page hidden" id="page-brief">
+
+      <!-- Navigation -->
+      <div class="brief-nav">
+        <div class="brief-nav-title">Brief créatif</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn" onclick="goBack()">← Modifier</button>
+          <button class="btn btn-primary" onclick="printBrief()">Imprimer / PDF</button>
+        </div>
+      </div>
+
+      <!-- Hero card -->
+      <div class="brief-hero">
+        <div class="brief-ref" id="br-ref">Réf. —</div>
+        <div class="brief-name" id="br-name">—</div>
+        <div class="brief-role" id="br-role">—</div>
+        <div class="brief-score-row">
+          <div class="brief-score-label">Complétion du dossier</div>
+          <div class="brief-score-track">
+            <div class="brief-score-fill" id="br-score-fill" style="width:0%"></div>
+          </div>
+          <div class="brief-score-num" id="br-score-num">0%</div>
+        </div>
+      </div>
+
+      <!-- Statut -->
+      <div class="brief-block" style="padding:1rem 1.5rem">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+          <div>
+            <div style="font-size:11px;color:var(--txt-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Statut du dossier</div>
+            <div style="font-size:14px;font-weight:500;color:var(--txt)" id="br-statut">—</div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--txt-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Date de création</div>
+            <div style="font-size:14px;color:var(--txt)" id="br-date">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bloc 1 : Identité -->
+      <div class="brief-block">
+        <div class="brief-block-title">Identité &amp; contact</div>
+        <div class="kv-table">
+          <div class="kv-row"><div class="kv-key">Nom complet</div><div class="kv-val" id="br-fullname">—</div></div>
+          <div class="kv-row"><div class="kv-key">Fonction</div><div class="kv-val" id="br-fonction">—</div></div>
+          <div class="kv-row"><div class="kv-key">Entreprise</div><div class="kv-val" id="br-ent">—</div></div>
+          <div class="kv-row"><div class="kv-key">Secteur</div><div class="kv-val" id="br-secteur">—</div></div>
+          <div class="kv-row"><div class="kv-key">Cible</div><div class="kv-val" id="br-cible">—</div></div>
+          <div class="kv-row"><div class="kv-key">Téléphone</div><div class="kv-val" id="br-tel">—</div></div>
+          <div class="kv-row"><div class="kv-key">E-mail</div><div class="kv-val" id="br-email">—</div></div>
+          <div class="kv-row"><div class="kv-key">Adresse</div><div class="kv-val" id="br-adresse">—</div></div>
+          <div class="kv-row"><div class="kv-key">Site web</div><div class="kv-val" id="br-web">—</div></div>
+          <div class="kv-row"><div class="kv-key">Réseaux sociaux</div><div class="kv-val" id="br-reseaux">—</div></div>
+          <div class="kv-row"><div class="kv-key">Code QR</div><div class="kv-val" id="br-qr">—</div></div>
+        </div>
+      </div>
+
+      <!-- Bloc 2 : Direction créative -->
+      <div class="brief-block">
+        <div class="brief-block-title">Direction créative</div>
+        <div class="kv-table">
+          <div class="kv-row"><div class="kv-key">Impression souhaitée</div><div class="kv-val" id="br-feel">—</div></div>
+          <div class="kv-row">
+            <div class="kv-key">Style visuel</div>
+            <div class="kv-val"><div class="tags-wrap" id="br-styles"></div></div>
+          </div>
+          <div class="kv-row">
+            <div class="kv-key">Palette couleurs</div>
+            <div class="kv-val"><div class="palette-display" id="br-palette"></div></div>
+          </div>
+          <div class="kv-row"><div class="kv-key">Typographie</div><div class="kv-val" id="br-typo">—</div></div>
+          <div class="kv-row"><div class="kv-key">Logo</div><div class="kv-val" id="br-logo">—</div></div>
+          <div class="kv-row"><div class="kv-key">Slogan / Accroche</div><div class="kv-val" id="br-slogan">—</div></div>
+          <div class="kv-row"><div class="kv-key">Inspirations</div><div class="kv-val" id="br-inspi">—</div></div>
+        </div>
+      </div>
+
+      <!-- Bloc 3 : Spécifications techniques -->
+      <div class="brief-block">
+        <div class="brief-block-title">Spécifications techniques</div>
+        <div class="kv-table">
+          <div class="kv-row"><div class="kv-key">Format</div><div class="kv-val" id="br-format">—</div></div>
+          <div class="kv-row"><div class="kv-key">Orientation</div><div class="kv-val" id="br-orient">—</div></div>
+          <div class="kv-row"><div class="kv-key">Impression</div><div class="kv-val" id="br-rv">—</div></div>
+          <div class="kv-row"><div class="kv-key">Papier</div><div class="kv-val" id="br-papier">—</div></div>
+          <div class="kv-row">
+            <div class="kv-key">Finitions</div>
+            <div class="kv-val"><div class="tags-wrap" id="br-finitions"></div></div>
+          </div>
+          <div class="kv-row"><div class="kv-key">Quantité estimée</div><div class="kv-val" id="br-qte">—</div></div>
+        </div>
+      </div>
+
+      <!-- Bloc 4 : Production -->
+      <div class="brief-block">
+        <div class="brief-block-title">Production &amp; contraintes</div>
+        <div class="kv-table">
+          <div class="kv-row"><div class="kv-key">Budget indicatif</div><div class="kv-val" id="br-budget">—</div></div>
+          <div class="kv-row"><div class="kv-key">Délai souhaité</div><div class="kv-val" id="br-delai">—</div></div>
+          <div class="kv-row"><div class="kv-key">À éviter</div><div class="kv-val" id="br-eviter">—</div></div>
+          <div class="kv-row"><div class="kv-key">Remarques</div><div class="kv-val" id="br-remarques">—</div></div>
+        </div>
+      </div>
+
+      <!-- Bloc 5 : Recommandations -->
+      <div class="brief-block">
+        <div class="brief-block-title">Recommandations du designer</div>
+        <div id="recos-container"></div>
+      </div>
+
+      <!-- Barre d'actions -->
+      <div class="print-bar">
+        <button class="btn" onclick="goBack()">← Modifier le formulaire</button>
+        <button class="btn btn-primary" onclick="copyBrief()">Copier le texte du brief</button>
+        <button class="btn" onclick="printBrief()">Imprimer / Exporter PDF</button>
+      </div>
+
+    </div><!-- /page-brief -->
+
+  </main>
+
+  <footer class="site-footer">
+    StudioBrief &mdash; Outil de collecte de brief carte de visite &mdash; &copy; 2024
+  </footer>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       JAVASCRIPT PRINCIPAL
+  ═══════════════════════════════════════════════════ -->
+  <script>
+    /* ─────────────────────────────────────────────────
+       ÉTAT DES COULEURS SÉLECTIONNÉES
+    ───────────────────────────────────────────────── */
+    const selectedColors = new Map();
+
+    // Initialisation des points couleurs cliquables
+    document.querySelectorAll('.color-dot').forEach(dot => {
+      dot.addEventListener('click', () => {
+        const color = dot.dataset.color;
+        const hex   = dot.dataset.hex;
+
+        if (dot.classList.contains('selected')) {
+          dot.classList.remove('selected');
+          selectedColors.delete(color);
+        } else {
+          dot.classList.add('selected');
+          selectedColors.set(color, hex);
+        }
+
+        // Mise à jour du texte indicateur
+        const hint = document.getElementById('color-hint');
+        if (selectedColors.size === 0) {
+          hint.textContent = 'Aucune couleur sélectionnée';
+        } else {
+          hint.textContent = 'Sélectionné(s) : ' + [...selectedColors.keys()].join(', ');
+        }
+
+        updateProgress();
+      });
+    });
+
+    /* ─────────────────────────────────────────────────
+       BARRE DE PROGRESSION
+    ───────────────────────────────────────────────── */
+    function updateProgress() {
+      const tracked = document.querySelectorAll('[data-track]');
+      let filled = 0;
+
+      tracked.forEach(el => {
+        if (el.type === 'radio' || el.type === 'checkbox') {
+          if (el.checked) filled++;
+        } else if (el.value && el.value.trim() !== '') {
+          filled++;
+        }
+      });
+
+      // Ajouter les couleurs au score
+      if (selectedColors.size > 0) filled++;
+
+      const total = tracked.length + 1; // +1 pour les couleurs
+      const pct   = Math.round((filled / total) * 100);
+
+      document.getElementById('progress-fill').style.width = pct + '%';
+      document.getElementById('pct-label').textContent = pct + '%';
+    }
+
+    // Écouter tous les champs trackables
+    document.querySelectorAll('[data-track]').forEach(el => {
+      el.addEventListener('input',  updateProgress);
+      el.addEventListener('change', updateProgress);
+    });
+
+    /* ─────────────────────────────────────────────────
+       UTILITAIRES DE LECTURE
+    ───────────────────────────────────────────────── */
+    // Lire un input texte par ID
+    const val = id => {
+      const el = document.getElementById(id);
+      return el ? el.value.trim() : '';
+    };
+
+    // Lire un groupe radio par name
+    const radio = name => {
+      const el = document.querySelector(`input[name="${name}"]:checked`);
+      return el ? el.value : '';
+    };
+
+    // Lire les checkboxes d'un conteneur
+    const checks = containerId => {
+      return [...document.querySelectorAll(`#${containerId} input[type=checkbox]:checked`)]
+        .map(c => c.value);
+    };
+
+    /* ─────────────────────────────────────────────────
+       CALCUL DU TAUX DE COMPLÉTION
+    ───────────────────────────────────────────────── */
+    function calcCompletion() {
+      // Champs obligatoires (60% du score)
+      const required = [
+        val('f-prenom'), val('f-nom'), val('f-titre'),
+        val('f-tel'), val('f-email'), val('f-format'), val('f-secteur')
+      ];
+      const reqScore = required.filter(x => x).length / required.length;
+
+      // Champs optionnels (40% du score)
+      const optional = [
+        val('f-entreprise'), val('f-adresse'), val('f-web'),
+        val('f-linkedin'), val('f-insta'), val('f-slogan'),
+        val('f-typo'), val('f-inspi'), val('f-budget'),
+        val('f-qte'), val('f-eviter'), val('f-remarques'),
+        radio('qr'), radio('feel'), radio('logo'),
+        radio('orient'), radio('rv'), val('f-papier'), val('f-delai')
+      ];
+      const stylesSel   = checks('styles-wrap').length > 0 ? 1 : 0;
+      const colorsSel   = selectedColors.size > 0 ? 1 : 0;
+      const finitionsSel = checks('finitions-wrap').length > 0 ? 1 : 0;
+      const optScore = (optional.filter(x => x).length + stylesSel + colorsSel + finitionsSel) /
+                       (optional.length + 3);
+
+      return Math.round(reqScore * 60 + optScore * 40);
+    }
+
+    /* ─────────────────────────────────────────────────
+       GÉNÉRATION DES RECOMMANDATIONS
+    ───────────────────────────────────────────────── */
+    function buildRecos() {
+      const recos = [];
+      const styles  = checks('styles-wrap');
+      const colors  = [...selectedColors.keys()];
+      const feel    = radio('feel');
+      const secteur = val('f-secteur').toLowerCase();
+      const logoVal = radio('logo');
+
+      // Vérification logo
+      if (!logoVal) {
+        recos.push({ label: 'Logo', text: 'Aucune information fournie. Préparez votre logo en format vectoriel (SVG, AI ou EPS) pour garantir une qualité optimale à l\'impression.' });
+      }
+
+      // Nombre de couleurs
+      if (colors.length === 0) {
+        recos.push({ label: 'Palette couleurs', text: 'Aucune couleur sélectionnée. Le designer choisira une palette adaptée à votre secteur d\'activité et au positionnement souhaité.' });
+      } else if (colors.length >= 4) {
+        recos.push({ label: 'Palette couleurs', text: `${colors.length} couleurs sélectionnées. Pour une carte lisible et professionnelle, 2 à 3 couleurs maximum sont recommandées. Envisagez de restreindre votre sélection.` });
+      }
+
+      // Cohérence feel/style
+      if (feel === 'Luxe / Prestige' && checks('finitions-wrap').length === 0) {
+        recos.push({ label: 'Finitions & positionnement', text: 'Pour un positionnement Luxe / Prestige, envisagez une dorure à chaud, un vernis sélectif ou un papier soft touch. Ces finitions renforcent fortement la perception haut de gamme.' });
+      }
+      if (feel === 'Confiance / Sérieux' && (styles.includes('Coloré / Dynamique') || styles.includes('Créatif / Audacieux'))) {
+        recos.push({ label: 'Cohérence visuelle', text: 'Votre impression souhaitée (Confiance / Sérieux) peut être en décalage avec les styles Créatif / Dynamique sélectionnés. Précisez au designer quel axe est prioritaire.' });
+      }
+
+      // Conseils par secteur
+      if (secteur.includes('avocat') || secteur.includes('droit') || secteur.includes('notaire')) {
+        recos.push({ label: 'Secteur juridique', text: 'Dans le domaine juridique, les codes visuels traditionnels (bleu marine, noir, typographie serif classique) inspirent confiance et sérieux. Évitez les styles trop colorés ou fantaisistes.' });
+      }
+      if (secteur.includes('santé') || secteur.includes('médecin') || secteur.includes('pharmacie') || secteur.includes('dentiste')) {
+        recos.push({ label: 'Secteur santé', text: 'Le bleu clair, le vert ou le blanc dominent dans ce secteur. Optez pour une typographie sans-serif lisible et une composition aérée pour inspirer hygiène et professionnalisme.' });
+      }
+      if (secteur.includes('mode') || secteur.includes('styliste') || secteur.includes('beauté') || secteur.includes('design')) {
+        recos.push({ label: 'Secteur créatif', text: 'Ce secteur valorise les partis pris graphiques forts. Explorez des formats originaux, des papiers texturés et une typographie distinctive pour vous démarquer.' });
+      }
+      if (secteur.includes('tech') || secteur.includes('informatique') || secteur.includes('numérique') || secteur.includes('digital')) {
+        recos.push({ label: 'Secteur tech', text: 'Une approche épurée et moderne avec des tons sombres ou neutres fonctionne bien dans ce secteur. Pensez à intégrer un QR code pointant vers votre portfolio ou profil LinkedIn.' });
+      }
+
+      // Verso sous-exploité
+      if (!radio('rv')) {
+        recos.push({ label: 'Format d\'impression', text: 'Le verso de la carte est souvent sous-exploité. Un recto-verso permet d\'y placer une accroche, une liste de services, un QR code ou une carte de fidélité sans surcharger le recto.' });
+      }
+
+      // Présence en ligne
+      if (!val('f-web') && !val('f-linkedin') && !val('f-insta')) {
+        recos.push({ label: 'Présence en ligne', text: 'Aucun lien en ligne renseigné. Ajouter au moins un lien (site, LinkedIn) renforce votre crédibilité et facilite le suivi après l\'échange de la carte.' });
+      }
+
+      // Dossier complet
+      if (recos.length === 0) {
+        recos.push({ label: 'Dossier complet', text: 'Excellent ! Toutes les informations essentielles sont présentes. Le designer dispose d\'une base solide pour démarrer la conception immédiatement.' });
+      }
+
+      return recos;
+    }
+
+    /* ─────────────────────────────────────────────────
+       REMPLISSAGE DU BRIEF
+    ───────────────────────────────────────────────── */
+    function setText(id, text) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = text || '—';
+    }
+
+    function fillBrief() {
+      const prenom   = val('f-prenom');
+      const nom      = val('f-nom');
+      const fullname = [prenom, nom].filter(Boolean).join(' ');
+      const pct      = calcCompletion();
+      const now      = new Date();
+
+      // En-tête hero
+      document.getElementById('br-ref').textContent = 'Réf. brief : CV-' + Date.now().toString(36).toUpperCase().slice(-6);
+      setText('br-name', fullname || 'Nom non renseigné');
+      setText('br-role', [val('f-titre'), val('f-entreprise')].filter(Boolean).join(' — ') || '—');
+
+      // Score
+      document.getElementById('br-score-num').textContent  = pct + '%';
+      document.getElementById('br-score-fill').style.width = pct + '%';
+
+      // Statut
+      let statut = '';
+      if (pct >= 80)      statut = '✓ Complet — prêt pour la conception';
+      else if (pct >= 50) statut = '△ Partiel — quelques informations manquantes';
+      else                statut = '○ Incomplet — merci de compléter le formulaire';
+      setText('br-statut', statut);
+
+      // Date
+      setText('br-date', now.toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' }));
+
+      // Identité
+      setText('br-fullname', fullname || '—');
+      setText('br-fonction',  val('f-titre') || '—');
+      setText('br-ent',       val('f-entreprise') || 'Non renseignée');
+      setText('br-secteur',   val('f-secteur') || '—');
+      setText('br-cible',     val('f-cible') || '—');
+      setText('br-tel',       [val('f-tel'), val('f-tel2')].filter(Boolean).join(' / ') || '—');
+      setText('br-email',     val('f-email') || '—');
+      setText('br-adresse',   val('f-adresse') || 'Non renseignée');
+      setText('br-web',       val('f-web') || 'Non renseigné');
+
+      // Réseaux sociaux
+      const rs = [];
+      if (val('f-linkedin'))  rs.push('LinkedIn : ' + val('f-linkedin'));
+      if (val('f-insta'))     rs.push(val('f-insta'));
+      if (val('f-autres-rs')) rs.push(val('f-autres-rs'));
+      setText('br-reseaux', rs.join(' — ') || 'Aucun');
+
+      // Code QR
+      const qrVal = radio('qr');
+      setText('br-qr', qrVal ? (qrVal === 'Oui' ? 'Oui — ' + (val('f-qr-url') || 'URL à préciser') : qrVal) : '—');
+
+      // Direction créative
+      setText('br-feel', radio('feel') || '—');
+      setText('br-typo', val('f-typo') || 'Aucune préférence — à la discrétion du designer');
+      setText('br-logo', radio('logo') || '—');
+      setText('br-slogan', val('f-slogan') || 'Aucun slogan');
+      setText('br-inspi', val('f-inspi') || 'Aucune référence fournie');
+
+      // Styles (tags)
+      const stylesEl = document.getElementById('br-styles');
+      stylesEl.innerHTML = '';
+      const st = checks('styles-wrap');
+      if (st.length > 0) {
+        st.forEach(s => {
+          const tag = document.createElement('span');
+          tag.className = 'tag';
+          tag.textContent = s;
+          stylesEl.appendChild(tag);
+        });
+      } else {
+        stylesEl.textContent = '—';
+      }
+
+      // Palette couleurs
+      const paletteEl = document.getElementById('br-palette');
+      paletteEl.innerHTML = '';
+      if (selectedColors.size > 0) {
+        selectedColors.forEach((hex, name) => {
+          const item = document.createElement('div');
+          item.className = 'palette-item';
+          const dot = document.createElement('div');
+          dot.className = 'palette-dot';
+          dot.style.background = hex;
+          const lbl = document.createElement('div');
+          lbl.className = 'palette-name';
+          lbl.textContent = name;
+          item.appendChild(dot);
+          item.appendChild(lbl);
+          paletteEl.appendChild(item);
+        });
+        if (val('f-couleur-autre')) {
+          const extra = document.createElement('div');
+          extra.style.fontSize = '12px';
+          extra.style.color = 'var(--txt-3)';
+          extra.style.marginTop = '4px';
+          extra.style.alignSelf = 'flex-end';
+          extra.textContent = '+ ' + val('f-couleur-autre');
+          paletteEl.appendChild(extra);
+        }
+      } else {
+        paletteEl.textContent = 'Aucune sélection — à la discrétion du designer';
+      }
+
+      // Spécifications techniques
+      setText('br-format', val('f-format') || '—');
+      setText('br-orient', radio('orient') || '—');
+      setText('br-rv',     radio('rv') || '—');
+      setText('br-papier', val('f-papier') || '—');
+      setText('br-qte',    val('f-qte') || '—');
+
+      // Finitions (tags)
+      const finEl = document.getElementById('br-finitions');
+      finEl.innerHTML = '';
+      const fin = checks('finitions-wrap');
+      if (fin.length > 0) {
+        fin.forEach(f => {
+          const tag = document.createElement('span');
+          tag.className = 'tag';
+          tag.textContent = f;
+          finEl.appendChild(tag);
+        });
+      } else {
+        finEl.textContent = '—';
+      }
+
+      // Production
+      setText('br-budget',   val('f-budget') || '—');
+      setText('br-delai',    val('f-delai') || '—');
+      setText('br-eviter',   val('f-eviter') || 'Aucune contrainte mentionnée');
+      setText('br-remarques', val('f-remarques') || 'Aucune');
+
+      // Recommandations
+      const recos = buildRecos();
+      const recoContainer = document.getElementById('recos-container');
+      recoContainer.innerHTML = '';
+      recos.forEach(r => {
+        const item = document.createElement('div');
+        item.className = 'reco-item';
+        const lbl = document.createElement('div');
+        lbl.className = 'reco-label';
+        lbl.textContent = r.label;
+        const txt = document.createElement('div');
+        txt.className = 'reco-text';
+        txt.textContent = r.text;
+        item.appendChild(lbl);
+        item.appendChild(txt);
+        recoContainer.appendChild(item);
+      });
+    }
+
+    /* ─────────────────────────────────────────────────
+       NAVIGATION ENTRE PAGES
+    ───────────────────────────────────────────────── */
+    function showPage(id) {
+      document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function previewBrief() {
+      fillBrief();
+      showPage('page-brief');
+    }
+
+    function submitForm() {
+      // Validation des champs obligatoires
+      const missing = [];
+      if (!val('f-prenom'))  missing.push('Prénom');
+      if (!val('f-nom'))     missing.push('Nom');
+      if (!val('f-titre'))   missing.push('Titre / Fonction');
+      if (!val('f-tel'))     missing.push('Téléphone');
+      if (!val('f-email'))   missing.push('E-mail');
+      if (!val('f-format'))  missing.push('Format de carte');
+      if (!val('f-secteur')) missing.push('Secteur d\'activité');
+
+      if (missing.length > 0) {
+        showToast('Champs manquants : ' + missing.join(', '));
+        // Scroll vers le premier champ vide
+        const firstMissing = document.getElementById('f-' + missing[0].toLowerCase().replace(/ /g,'-').replace('é','e').replace('î','i'));
+        if (firstMissing) firstMissing.focus();
+        return;
+      }
+
+      fillBrief();
+      showPage('page-brief');
+    }
+
+    function goBack() {
+      showPage('page-form');
+    }
+
+    /* ─────────────────────────────────────────────────
+       RÉINITIALISATION
+    ───────────────────────────────────────────────── */
+    function resetForm() {
+      if (!confirm('Réinitialiser le formulaire ? Toutes vos réponses seront effacées.')) return;
+
+      document.querySelectorAll('input[type=text], input[type=email], input[type=tel], input[type=url], textarea').forEach(el => el.value = '');
+      document.querySelectorAll('select').forEach(el => el.value = '');
+      document.querySelectorAll('input[type=radio], input[type=checkbox]').forEach(el => el.checked = false);
+
+      // Reset couleurs
+      selectedColors.clear();
+      document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
+      document.getElementById('color-hint').textContent = 'Aucune couleur sélectionnée';
+
+      updateProgress();
+      showToast('Formulaire réinitialisé');
+    }
+
+    /* ─────────────────────────────────────────────────
+       COPIE DU BRIEF EN TEXTE
+    ───────────────────────────────────────────────── */
+    function copyBrief() {
+      const prenom  = val('f-prenom');
+      const nom     = val('f-nom');
+      const titre   = val('f-titre');
+      const secteur = val('f-secteur');
+      const feel    = radio('feel');
+      const styles  = checks('styles-wrap').join(', ') || 'Non précisé';
+      const colors  = [...selectedColors.keys()].join(', ') || 'Non précisé';
+      const logo    = radio('logo');
+      const format  = val('f-format');
+      const rv      = radio('rv');
+      const pct     = calcCompletion();
+
+      const text = `
+BRIEF CRÉATIF — CARTE DE VISITE
+================================
+Référence : CV-${Date.now().toString(36).toUpperCase().slice(-6)}
+Date : ${new Date().toLocaleDateString('fr-FR')}
+Complétion : ${pct}%
+
+IDENTITÉ
+--------
+Nom complet : ${prenom} ${nom}
+Fonction    : ${titre}
+Entreprise  : ${val('f-entreprise') || 'N/A'}
+Secteur     : ${secteur}
+Téléphone   : ${val('f-tel')}
+E-mail      : ${val('f-email')}
+Site web    : ${val('f-web') || 'N/A'}
+
+DIRECTION CRÉATIVE
+------------------
+Impression souhaitée : ${feel || 'Non précisé'}
+Style visuel         : ${styles}
+Palette couleurs     : ${colors}
+Typographie          : ${val('f-typo') || 'Au choix du designer'}
+Logo                 : ${logo || 'Non précisé'}
+Slogan               : ${val('f-slogan') || 'Aucun'}
+
+SPÉCIFICATIONS
+--------------
+Format      : ${format}
+Orientation : ${radio('orient') || 'N/A'}
+Impression  : ${rv || 'N/A'}
+Papier      : ${val('f-papier') || 'N/A'}
+Finitions   : ${checks('finitions-wrap').join(', ') || 'Aucune'}
+Quantité    : ${val('f-qte') || 'Non précisé'}
+Budget      : ${val('f-budget') || 'Non précisé'}
+Délai       : ${val('f-delai') || 'Non précisé'}
+
+CONTRAINTES
+-----------
+À éviter   : ${val('f-eviter') || 'Aucune'}
+Remarques  : ${val('f-remarques') || 'Aucune'}
+`.trim();
+
+      navigator.clipboard.writeText(text)
+        .then(() => showToast('Brief copié dans le presse-papiers !'))
+        .catch(() => showToast('Impossible de copier — sélectionnez manuellement'));
+    }
+
+    /* ─────────────────────────────────────────────────
+       IMPRESSION
+    ───────────────────────────────────────────────── */
+    function printBrief() {
+      window.print();
+    }
+
+    /* ─────────────────────────────────────────────────
+       TOAST NOTIFICATION
+    ───────────────────────────────────────────────── */
+    let toastTimer = null;
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 3200);
+    }
+
+    /* ─────────────────────────────────────────────────
+       INIT
+    ───────────────────────────────────────────────── */
+    updateProgress();
+  </script>
+</body>
+</html>

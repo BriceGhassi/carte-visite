@@ -1,0 +1,17 @@
+{
+  "name": "carte-visite-brief",
+  "version": "1.0.0",
+  "description": "Questionnaire de collecte de brief pour carte de visite personnalisée",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT"
+}
