@@ -2,7 +2,7 @@
 // server.js — Express + API Anthropic (Claude) avec streaming SSE
 // Déploiement : Render.com
 // Variable d'env requise : ANTHROPIC_API_KEY
-// ═══════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════
 
 const express = require('express');
 const path    = require('path');
